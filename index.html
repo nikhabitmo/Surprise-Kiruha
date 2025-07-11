@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Кирюха</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js "></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 40px auto;
+            max-width: 800px;
+            padding: 0 20px;
+            line-height: 1.7;
+            color: #333;
+            background-color: #fffaf8;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        #letter {
+            white-space: pre-wrap;
+            font-size: 1rem;
+            margin-bottom: 40px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            margin: 40px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<h1>КИРЮХА ХЕППИ БЁЗДЕЙ</h1>
+
+<div id="letter">Загрузка текста...</div>
+
+<p> <img src="img.png"> </p>
+
+
+<canvas id="pdfViewer1"></canvas>
+<canvas id="pdfViewer2"></canvas>
+
+
+
+<script>
+    fetch('text.txt')
+        .then(response => response.text())
+        .then(text => {
+            document.getElementById('letter').textContent = text;
+        })
+        .catch(err => {
+            document.getElementById('letter').textContent = 'Не удалось загрузить текст.';
+            console.error('Ошибка загрузки text.txt:', err);
+        });
+
+    function renderPdf(canvasId, pdfPath) {
+        const canvas = document.getElementById(canvasId);
+        const context = canvas.getContext('2d');
+
+        pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+            pdf.getPage(1).then(page => {
+                const viewport = page.getViewport({ scale: 1.5 });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                page.render({ canvasContext: context, viewport: viewport });
+            });
+        });
+    }
+
+    renderPdf('pdfViewer1', 'document1.pdf');
+</script>
+</body>
+</html>
