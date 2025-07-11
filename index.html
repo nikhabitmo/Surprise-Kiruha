@@ -42,13 +42,10 @@
 
 <div id="letter">Загрузка текста...</div>
 
-<p> <img src="img.png"> </p>
-
+<p><img src="img.png"></p>
 
 <canvas id="pdfViewer1"></canvas>
 <canvas id="pdfViewer2"></canvas>
-
-
 
 <script>
     fetch('text.txt')
@@ -61,12 +58,12 @@
             console.error('Ошибка загрузки text.txt:', err);
         });
 
-    function renderPdf(canvasId, pdfPath) {
+    function renderPdf(canvasId, pdfPath, pageNumber) {
         const canvas = document.getElementById(canvasId);
         const context = canvas.getContext('2d');
 
         pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
-            pdf.getPage(1).then(page => {
+            pdf.getPage(pageNumber).then(page => {
                 const viewport = page.getViewport({ scale: 1.5 });
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
@@ -75,7 +72,8 @@
         });
     }
 
-    renderPdf('pdfViewer1', 'document1.pdf');
+    renderPdf('pdfViewer1', 'document1.pdf', 1);
+    renderPdf('pdfViewer2', 'document1.pdf', 2);
 </script>
 </body>
 </html>
